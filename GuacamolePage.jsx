@@ -1,3 +1,310 @@
+import Head from "next/head";
+
+export default function GuacamolePage() {
+  return (
+    <>
+      <Head>
+<meta charset="utf-8" />
+<title>guacamole-lite test</title>
+<style>
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+#app-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#connection-screen {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding-top: 60px;
+    box-sizing: border-box;
+}
+
+#connection-form {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    width: 90%;
+    max-width: 600px;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-row {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+#remote-host-details {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#remote-host-details.visible {
+    display: flex;
+}
+
+#join-connection-details {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#join-connection-details.visible {
+    display: flex;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+input, select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+button {
+    padding: 12px 20px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #3367d6;
+}
+
+#display-screen {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+#display-header {
+    display: flex;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#display-title {
+    font-weight: bold;
+}
+
+#display-uuid {
+    margin-left: 15px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #aee;
+}
+
+#display-uuid:hover {
+    text-decoration: underline;
+}
+
+#close-button {
+    padding: 8px 15px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#display {
+    flex-grow: 1;
+    width: 100%;
+    cursor: default;
+}
+
+.guac-hide-cursor {
+    cursor: url('data:image/gif;base64,R0lGODlhIAAgAIABAAAAAP///yH5BAEKAAEALAAAAAAgACAAAAIfRI6py+0Po5y02ouz3rz7D4biSJbmIabqyrbuC8dmAQA7'), default;
+}
+
+/* Radio button styles */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+}
+
+.radio-option label {
+    margin-left: 8px;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
+/* Checkbox styles */
+.checkbox-option {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-option input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.checkbox-option label {
+    margin-bottom: 0;
+    cursor: pointer;
+    font-weight: normal;
+} 
+</style>
+</Head>
+<div id="app-container">
+    {/* Connection Screen */}
+    <div id="connection-screen">
+        <div id="connection-form">
+            <h2 className="form-header">Guacamole Remote Connection</h2>
+
+            <div className="form-row">
+                <label>Connection Type:</label>
+                <div id="connection-type" className="radio-group">
+                    <div className="radio-option">
+                        <input type="radio" id="connection-type-new" name="connection-type" value="new" />
+                        <label htmlFor="connection-type-new">New Connection</label>
+                    </div>
+                    <div className="radio-option">
+                        <input type="radio" id="connection-type-join" name="connection-type" value="join" />
+                        <label htmlFor="connection-type-join">Join Connection</label>
+                    </div>
+                </div>
+            </div>
+
+            <div className="form-row">
+                <label>Protocol:</label>
+                <div id="protocol" className="radio-group">
+                    <div className="radio-option">
+                        <input type="radio" id="protocol-rdp" name="protocol" value="rdp" checked />
+                        <label htmlFor="protocol-rdp">RDP</label>
+                    </div>
+                    <div className="radio-option">
+                        <input type="radio" id="protocol-vnc" name="protocol" value="vnc" />
+                        <label htmlFor="protocol-vnc">VNC</label>
+                    </div>
+                </div>
+            </div>
+
+            <div className="form-row">
+                <label>Connect to:</label>
+                <div id="connect-target" className="radio-group">
+                    <div className="radio-option">
+                        <input type="radio" id="connect-target-test" name="connect-target" value="test-host" checked />
+                        <label htmlFor="connect-target-test">Test Host</label>
+                    </div>
+                    <div className="radio-option">
+                        <input type="radio" id="connect-target-remote" name="connect-target" value="remote-host" />
+                        <label htmlFor="connect-target-remote">Remote Host</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="remote-host-details">
+                <div className="form-row">
+                    <label htmlFor="remote-hostname">Host:</label>
+                    <input type="text" id="remote-hostname" placeholder="hostname or IP" />
+                </div>
+                <div className="form-row">
+                    <label htmlFor="remote-username">Username:</label>
+                    <input type="text" id="remote-username" />
+                </div>
+                <div className="form-row">
+                    <label htmlFor="remote-password">Password:</label>
+                    <input type="password" id="remote-password" />
+                </div>
+            </div>
+
+            <div id="join-connection-details">
+                <div className="form-row">
+                    <label htmlFor="connection-id">Connection ID:</label>
+                    <input type="text" id="connection-id" placeholder="Enter connection ID to join" />
+                </div>
+                <div className="form-row">
+                    <div className="checkbox-option">
+                        <input type="checkbox" id="read-only" value="true" />
+                        <label htmlFor="read-only">Read-only mode</label>
+                    </div>
+                </div>
+            </div>
+
+            <div className="form-row" style="margin-top: 20px;">
+                <button id="connect-button">Connect</button>
+            </div>
+        </div>
+    </div>
+
+    {/* Display Screen */}
+    <div id="display-screen">
+        <div id="display-header">
+            <div id="display-title">Remote Connection</div>
+            <span id="display-uuid" title="Click to copy Connection ID"></span>
+            <button id="close-button">Disconnect</button>
+        </div>
+        {/* The remote-desktop surface */}
+        <div id="display"></div>
+    </div>
+</div>
+
+{/* Hidden textarea for clipboard integration */}
+<textarea id="clipboard-textarea" style="position: absolute; left: -9999px;"></textarea>
+
+<script src="https://cdn.jsdelivr.net/npm/guacamole-common-js@1.5.0/dist/cjs/guacamole-common.min.js"></script>
+<script>
+async function generateGuacamoleToken(tokenObj) {
+  /* ------------ demo-only token generation (do this in backend IRL) --- */
+  const CIPHER = 'AES-256-CBC';
+  const KEY = new TextEncoder().encode('MySuperSecretKeyForParamsToken12');
+
+  const iv   = crypto.getRandomValues(new Uint8Array(16));
+  const algo = { name: "AES-CBC", iv };
+  const key  = await crypto.subtle.importKey("raw", KEY, algo, false, ["encrypt"]);
+  const ct   = new Uint8Array(await crypto.subtle.encrypt(algo, key,
+                      new TextEncoder().encode(JSON.stringify(tokenObj))));
+
+  const token = btoa(JSON.stringify({
+    iv:    btoa(String.fromCharCode(...iv)),
+    value: btoa(String.fromCharCode(...ct))
+  }));
+
+  return token;
+} 
+</script>
+<script>
 // DOM elements
 const connectionScreen = document.getElementById('connection-screen');
 const displayScreen = document.getElementById('display-screen');
@@ -428,3 +735,9 @@ if (displayUuid) {
 window.addEventListener('beforeunload', () => {
     cleanupGuacamole();
 }); 
+</script>
+    </>
+  );
+}
+
+
